@@ -49,6 +49,9 @@ for i in range(len(TEMPERATURES)):
 
         # Convert the list into a numpy array and take the mean over 64 neurons
         np_array = np.array(trajectories_to_average)
+        print(np_array.shape)
+        mean = np.mean(np_array, 0) 
+        print(mean.shape)
         average_trajectories.append(np.mean(np_array, -1))
 
 np_average_trajectories = np.array(average_trajectories)
