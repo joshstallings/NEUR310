@@ -14,7 +14,7 @@ from netrep.metrics import LinearMetric, GaussianStochasticMetric, EnergyStochas
 import generators
 
 OUTPUT_FOLDER = "ranging_temperature_across_k_seeds"
-EXPERIMENT_NAME = "experimentTEST"
+EXPERIMENT_NAME = "experiment800N"
 
 PROMPT = "Once upon a time"
 PROMPT_LENGTH = len(PROMPT.split(" "))
