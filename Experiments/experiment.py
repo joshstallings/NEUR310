@@ -14,20 +14,20 @@ from netrep.metrics import LinearMetric, GaussianStochasticMetric, EnergyStochas
 import generators
 
 OUTPUT_FOLDER = "ranging_temperature_across_k_seeds"
-EXPERIMENT_NAME = "experiment0"
+EXPERIMENT_NAME = "experimentTEST"
 
 PROMPT = "Once upon a time"
-SEEDS = [1, 2]
-TEMPERATURES = [1.0, 2.0]
-NUM_EXPERIMENTS = 2
-NUM_TOKENS = 10
+PROMPT_LENGTH = len(PROMPT.split(" "))
+SEEDS = [1, 2, 3]
+TEMPERATURES = [0, 0.5, 1.0, 2.0]
+NUM_EXPERIMENTS = 800
+NUM_TOKENS = 20
 
 # Load in the model
 
-
 # Entries are of shape [ activations, token_responses]
 # where activations and token_responses are of size 800
-trials = np.empty( (len(TEMPERATURES), len(SEEDS), NUM_EXPERIMENTS, 64) )
+trials = np.empty( (len(TEMPERATURES), len(SEEDS), NUM_EXPERIMENTS, PROMPT_LENGTH + NUM_TOKENS - 1, 64) )
 average_trajectories = []
 for i in range(len(TEMPERATURES)):
     t = TEMPERATURES[i]
@@ -42,19 +42,14 @@ for i in range(len(TEMPERATURES)):
             activation_responses, token_responses = generators.generate(model_1m, "1m", tokenizer, PROMPT, NUM_TOKENS, 
                                                                  layer_to_record=-1)
 
-            last_token_last_layer_trajectory = activation_responses[k][-1][0][0][-1]
-            trajectories_to_average.append(last_token_last_layer_trajectory)
-            trials[i, j, k] = last_token_last_layer_trajectory
+            last_layer_trajectory = activation_responses[k][-1][0][0]
+            trajectories_to_average.append(last_layer_trajectory)
+            trials[i, j, k] = last_layer_trajectory
 
 
         # Convert the list into a numpy array and take the mean over 64 neurons
         np_array = np.array(trajectories_to_average)
-        print(np_array.shape)
-        mean = np.mean(np_array, 0) 
-        print(mean.shape)
-        average_trajectories.append(np.mean(np_array, -1))
 
-np_average_trajectories = np.array(average_trajectories)
 # THIS IS TO HELP ME REMEMBER THE LAYOUT OF THIS MATRIX
 # print(len(activation_responses)) # Number of experiments
 # print(len(activation_responses[0])) # Number of tokens
@@ -66,9 +61,3 @@ if(not os.path.isdir(OUTPUT_FOLDER)):
     os.mkdir(f"{OUTPUT_FOLDER}")
 
 np.save(f"{OUTPUT_FOLDER}{os.sep}{EXPERIMENT_NAME}_per_trial_tensor.npy", trials)
-np.save(f"{OUTPUT_FOLDER}{os.sep}{EXPERIMENT_NAME}_average_over_seeds.npy", np_average_trajectories)
-
-
-# with open(f"{OUTPUT_FOLDER}{os.sep}{EXPERIMENT_NAME}.txt", "w") as f:
-#     for token_response in token_responses:
-#         f.write(str(token_response)+"\n")adfasd
