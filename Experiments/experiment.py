@@ -8,10 +8,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from torch.nn.functional import softmax
 from transformers import AutoModelForCausalLM, AutoTokenizer, GenerationConfig, set_seed
-from netrep.metrics import LinearMetric, GaussianStochasticMetric, EnergyStochasticMetric
-
-# My code. 
-import generators
 
 OUTPUT_FOLDER = "Experiments/data"
 EXPERIMENT_NAME = f"2_1M_experiment800N_EXTREME_TEMPS_PROMPTB"
@@ -155,7 +151,8 @@ np.save(f"{OUTPUT_FOLDER}{os.sep}{EXPERIMENT_NAME}_per_trial_tensor.npy", trials
 
 with open(f"{OUTPUT_FOLDER}{os.sep}{EXPERIMENT_NAME}_text_response.txt", "w") as f:
     for i in range(len(token_responses)):
-        f.write(tokenizer.decode(token_response[i])+"\n")
+        response = tokenizer.decode(token_response[i])
+        f.write(response)
 
 with open(f"{OUTPUT_FOLDER}{os.sep}{EXPERIMENT_NAME}_params.txt", "w") as f:
     for k, v in PARAMS.items():
