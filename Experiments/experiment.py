@@ -84,17 +84,16 @@ for i in range(len(TEMPERATURES)):
                 # Logits are values before they are passed to the activation function.
                 logits = outputs.logits
                 next_token_logits = logits[:, -1, :]
-                scaled_logits = next_token_logits
 
+                scaled_logits = next_token_logits
                 if t > 0:
                     scaled_logits = next_token_logits / t
-
 
                 top_k = 50  # Keep only the top 50 most likely tokens
                 indices_to_remove = scaled_logits < torch.topk(scaled_logits, top_k)[0][..., -1, None]
                 scaled_logits[indices_to_remove] = -float('Inf')
                 
-                # 3. Apply Top-P (nucleus) sampling
+                # Apply Top-P (nucleus) sampling
                 top_p = 0.95  # Keep tokens that add up to 95% probability
                 sorted_logits, sorted_indices = torch.sort(scaled_logits, descending=True)
                 cumulative_probs = torch.cumsum(softmax(sorted_logits, dim=-1), dim=-1)
@@ -139,7 +138,7 @@ print(f"Total Responses shape={np_array.shape}\nTrials Shape={trials.shape}")
 
 # THIS IS TO HELP ME REMEMBER THE LAYOUT OF THIS MATRIX
 # print(len(activation_responses)) # Number of experiments
-# print(len(activation_responses[0])) # Number of tokens
+# print(len(activation_responses[0])) # Number of tokens generated
 # print(len(activation_responses[0][0])) # == 2, something about the output
 # print(activation_responses[0][19][0].shape) # [1, <token>, 64]
 # print(activation_responses[0][0][1].shape) # [1, 16, 6, 6]
