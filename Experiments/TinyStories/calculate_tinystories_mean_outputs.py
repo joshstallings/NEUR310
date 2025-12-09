@@ -37,7 +37,7 @@ for MODEL, DATA_LIST in MODEL_TO_DATA.items():
         OUTPUT[MODEL][PROMPT] = []
 
         # Load in data and create the means. 
-        DATA = [np.load(d) for d in DATA]
+        DATA = [np.load(DATA)]
         AVERAGE_RESPONSES = [np.mean(d, 2) for d in DATA]
 
         # Instantiate the tokenizer and tokenize input prompt. 
